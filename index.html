@@ -1240,7 +1240,7 @@
             <button type="button" id="sanbanmeVisit" onclick="selectVisit(this)">3回目以降</button>
         </div>
 
-<!-- ② HTML：各ブロックの「日付入力」をラップして“日付を選択”を重ねる -->
+<!-- ② HTML：各ブロックの「日付入力」をラップして“1.日付を選択”を重ねる -->
 <div class="labelkibounitizi">希望日時<span class="required">必須</span></div>
 <div class="datetime-wrapper" style="text-align: center;">
   <span class="placeholder" id="placeholder1">⇩タップして日時を入力⇩</span>
@@ -1248,7 +1248,7 @@
   <input type="hidden" id="date1" name="date1">
   <div class="dt-grid">
     <!-- 日付も<select>にして時間と同じ見た目 -->
-    <select id="date1_day" class="datetime-input" aria-label="日付を選択"></select>
+    <select id="date1_day" class="datetime-input" aria-label="1.日付を選択"></select>
     <select id="date1_time" class="datetime-input" aria-label="時間（00/30のみ）"></select>
   </div>
 </div>
@@ -1259,7 +1259,7 @@
   <span class="placeholder" id="placeholder2">⇩タップして日時を入力⇩</span>
   <input type="hidden" id="date2" name="date2">
   <div class="dt-grid">
-    <select id="date2_day" class="datetime-input" aria-label="日付を選択"></select>
+    <select id="date2_day" class="datetime-input" aria-label="1.日付を選択"></select>
     <select id="date2_time" class="datetime-input" aria-label="時間（00/30のみ）"></select>
   </div>
 </div>
@@ -1270,7 +1270,7 @@
   <span class="placeholder" id="placeholder3">⇩タップして日時を入力⇩</span>
   <input type="hidden" id="date3" name="date3">
   <div class="dt-grid">
-    <select id="date3_day" class="datetime-input" aria-label="日付を選択"></select>
+    <select id="date3_day" class="datetime-input" aria-label="1.日付を選択"></select>
     <select id="date3_time" class="datetime-input" aria-label="時間（00/30のみ）"></select>
   </div>
 </div>
@@ -1575,7 +1575,7 @@ function formatDateTime(dateTimeString) {
         document.querySelectorAll('.calendar td').forEach(cell => {
             cell.addEventListener('click', () => {
                 selectDate(cell);
-                updateDisplayInfo();  // 日付を選択したら即座に表示を更新
+                updateDisplayInfo();  // 1.日付を選択したら即座に表示を更新
             });
         });
 
@@ -1590,7 +1590,7 @@ function toISODateTimeLocal(dayStr, timeStr) {
 // 日付セレクト：今日から 'days' 日ぶんの候補を作る（★日曜は除外）
 function buildDateOptions(selectEl, days = 120, startDate = new Date()) {
   const d = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-  selectEl.innerHTML = '<option value="" disabled selected>日付を選択</option>';
+  selectEl.innerHTML = '<option value="" disabled selected>1.日付を選択</option>';
 
   for (let i = 0; i < days; i++) {
     const wd = d.getDay(); // 0=日曜 … 6=土曜
@@ -1644,7 +1644,8 @@ function isBlockedTime(weekday, h, m) {
 
 // 時間セレクト生成（曜日ごと、30分刻み／終端を含む）
 function buildHalfHourOptions(selectEl, weekday) {
-  selectEl.innerHTML = '<option value="" disabled selected>時間を選択</option>';
+  // ▼ここを差し替え
+  selectEl.innerHTML = '<option value="" disabled selected>2.時間を選択</option>';
 
   const cfg = WEEKLY_HOURS[weekday];
   // ★営業時間設定がない日（例：日曜）は候補を出さない
@@ -1720,6 +1721,9 @@ function initPicker(baseId, dateDays = 120) {
 
   buildDateOptions(daySel, dateDays);
 
+  // ▼この1行を追加（初期表示から「2.時間を選択」に）
+  timeSel.innerHTML = '<option value="" disabled selected>2.時間を選択</option>';
+
   // 日付が選ばれたら曜日に応じて時間を生成
   daySel.addEventListener('change', () => {
     const dateVal = daySel.value;
@@ -1727,8 +1731,9 @@ function initPicker(baseId, dateDays = 120) {
       const d = new Date(dateVal);
       const wd = d.getDay(); // 0=日曜 … 6=土曜
       buildHalfHourOptions(timeSel, wd);
-    } else {
-      timeSel.innerHTML = '<option value="" disabled selected>時間を選択</option>';
+} else {
+  // ▼ここを差し替え
+  timeSel.innerHTML = '<option value="" disabled selected>2.時間を選択</option>';
     }
     updateHiddenAndPlaceholder(baseId);
   });
