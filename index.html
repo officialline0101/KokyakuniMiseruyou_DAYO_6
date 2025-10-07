@@ -1015,7 +1015,7 @@
         <div class="labelContent">ご予約内容</div>
         <div id="displayInfo"></div> <!-- ここに選択された情報を表示します -->
 
-        <button class="submit-button" onclick="submitForm()" div id="section-message">予約を行う</button>
+        <button class="submit-button" onclick="submitForm()" div id="section-message">希望日を送る</button>
     </div>
 
     <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
@@ -1485,7 +1485,7 @@ function submitForm() {
 
   // 送信
   liff.sendMessages([{ type: 'text', text }]).then(() => {
-    alert('当日キャンセルは無いようにお願いいたします。');
+    alert('スタッフが日時確認次第、ご連絡差し上げます。');
     liff.closeWindow();
   }).catch((err) => {
     console.error('メッセージの送信に失敗しました', err);
