@@ -152,21 +152,22 @@
             overflow: hidden;
         }
 
-.labelContentuesukima {
-    display: block;
-    margin-top: 10px; /* ← 上に5pxの隙間を追加 */
-    margin-bottom: 10px;
-    padding: 3px;
-    font-weight: 600;
-    background-color: #505050;
-    color: white;
-    border-radius: 6px;
-    font-size: 18px;
-    text-align: center;
-    text-indent: 0px;
-    position: relative;
-    overflow: hidden;
-}
+        .labelContentuesukima {
+            display: block;
+            margin-top: 10px;
+            /* ← 上に5pxの隙間を追加 */
+            margin-bottom: 10px;
+            padding: 3px;
+            font-weight: 600;
+            background-color: #505050;
+            color: white;
+            border-radius: 6px;
+            font-size: 18px;
+            text-align: center;
+            text-indent: 0px;
+            position: relative;
+            overflow: hidden;
+        }
 
         /* 必須マークのスタイル */
         .required {
@@ -237,21 +238,22 @@
             color: #fff;
         }
 
-.visit-buttons,
-.highschool-buttons,
-.symptoms,
-.menu-sections,
-.irradiations {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
-}
+        .visit-buttons,
+        .highschool-buttons,
+        .symptoms,
+        .menu-sections,
+        .irradiations {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
 
-/* menu-sections だけ縦一列にする */
-.menu-sections {
-    flex-direction: column; /* ← 追加 */
-}
+        /* menu-sections だけ縦一列にする */
+        .menu-sections {
+            flex-direction: column;
+            /* ← 追加 */
+        }
 
         .date-inputs input[type="datetime-local"] {
             width: calc(100% - 22px);
@@ -851,30 +853,66 @@
             /* はみ出た中身を隠す（枠から出ないようにする） */
         }
 
-.small-text {
-  font-size: 18px; /* 好きなサイズに変更可能 */
-}
+        .small-text {
+            font-size: 18px;
+            /* 好きなサイズに変更可能 */
+        }
 
-  /* 既存の .datetime-input を活かしつつ横並び */
-  .dt-grid {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-  .dt-grid .datetime-input {
-    flex: 1 1 50%;
-  }
-  @media (max-width: 480px) {
-    .dt-grid { flex-direction: column; }
-  }
+        /* 既存の .datetime-input を活かしつつ横並び */
+        .dt-grid {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
 
-    /* 既存の .datetime-input スタイルが効いて同じ見た目になります */
-  .dt-grid {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-  @media (max-width: 480px) { .dt-grid { flex-direction: column; } }
+        .dt-grid .datetime-input {
+            flex: 1 1 50%;
+        }
+
+        @media (max-width: 480px) {
+            .dt-grid {
+                flex-direction: column;
+            }
+        }
+
+        /* 既存の .datetime-input スタイルが効いて同じ見た目になります */
+        .dt-grid {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        @media (max-width: 480px) {
+            .dt-grid {
+                flex-direction: column;
+            }
+        }
+
+        .nail-submenu {
+            margin-top: 8px;
+            display: grid;
+            gap: 8px;
+        }
+
+        /* 仕切り線（少し太め） */
+        .menu-divider {
+            height: 6px;
+            /* ← 太さ（お好みで 4〜8px 程度） */
+            background: #bcbcbd;
+            /* グレー。#dfe3e8 などでもOK */
+            border-radius: 4px;
+            /* 角を少し丸く */
+            margin: 10px 0;
+            /* ボタンとの余白 */
+        }
+
+        /* サブメニュー用（少しだけ細くしたい時は任意で使う） */
+        .menu-divider--sub {
+            height: 4px;
+            background: #edf0f3;
+            border-radius: 3px;
+            margin: 8px 0;
+        }
     </style>
 </head>
 
@@ -896,12 +934,19 @@
         <div class="label">電話番号<span class="required">必須</span></div>
         <input type="tel" id="phone" placeholder="電話番号を入力してください" oninput="saveInput('phone')">
 
-        <div class="label" id="course">メニューをお選びください<span class="required">必須</span></div>
+        <div class="label" id="course">メニューカテゴリーを<span class="required">必須</span><br>お選びください</div>
         <div class="menu-sections">
-            <button type="button" onclick="showMenu('male')">エステメニュー</button>
-            <button type="button" onclick="showMenu('female')">【ネイル】ハンドメニュー</button>
-            <button type="button" onclick="showMenu('futto')">【ネイル】フットメニュー</button>
-            <button type="button" onclick="showMenu('ohunomi')">【ネイル】オフのみ</button>
+            <button type="button" onclick="showMenu('male')">POLAエステ</button>
+            <div class="menu-divider"></div>
+            <!-- ▼ 追加：ネイル親ボタン＋サブメニュー（最初は非表示） -->
+            <button type="button" id="nailParentBtn" onclick="toggleNail()">ネイル</button>
+            <div id="nailSubButtons" class="nail-submenu" style="display:none;">
+                <button type="button" onclick="showMenu('female')">ハンドメニュー</button>
+                <button type="button" onclick="showMenu('futto')">フットメニュー</button>
+                <button type="button" onclick="showMenu('ohunomi')">オフのみ</button>
+            </div>
+            <!-- ▲ ここまで -->
+            <div class="menu-divider"></div>
             <button type="button" onclick="showMenu('whitening')">スカルプインク</button>
         </div>
 
@@ -909,7 +954,7 @@
 
         <div id="male" class="menu-section">
             <div class="label">
-                <span class="highlight-text">◆エステメニュー◆<span class="required">必須</span></span>
+                <span class="highlight-text">◆POLAエステ◆<span class="required">必須</span></span>
             </div>
             <div class="symptoms">
                 <button type="button" onclick="selectSymptom(this, 'treatment1')" data-price="15000">ポーラの肌分析</button>
@@ -942,8 +987,10 @@
                 <span class="highlight-text">オプション</span>
             </div>
             <div class="irradiations">
-                <button type="button" id="fourthirradiations" onclick="selectirradiations(this)" data-price="15000">当店オフ</button>
-                <button type="button" id="fifthirradiations" onclick="selectirradiations(this)" data-price="15000">他店オフ</button>
+                <button type="button" id="fourthirradiations" onclick="selectirradiations(this)"
+                    data-price="15000">当店オフ</button>
+                <button type="button" id="fifthirradiations" onclick="selectirradiations(this)"
+                    data-price="15000">他店オフ</button>
             </div>
         </div>
 
@@ -963,8 +1010,10 @@
                 <span class="highlight-text">オプション</span>
             </div>
             <div class="irradiations">
-                <button type="button" id="fourthirradiations" onclick="selectirradiations(this)" data-price="15000">当店オフ</button>
-                <button type="button" id="fifthirradiations" onclick="selectirradiations(this)" data-price="15000">他店オフ</button>
+                <button type="button" id="fourthirradiations" onclick="selectirradiations(this)"
+                    data-price="15000">当店オフ</button>
+                <button type="button" id="fifthirradiations" onclick="selectirradiations(this)"
+                    data-price="15000">他店オフ</button>
             </div>
         </div>
 
@@ -1074,10 +1123,82 @@
 
         let selectedMenuTime = 0;
 
-        // 入力内容をローカルストレージに保存
-        function saveInput(id) {
-            const value = document.getElementById(id).value;
-            localStorage.setItem(id, value);
+        function toggleNail() {
+            const parent = document.getElementById('nailParentBtn');
+            const sub = document.getElementById('nailSubButtons');
+            const isOpen = parent.classList.contains('active'); // いま開いているか
+
+            if (isOpen) {
+                // すでに開いている → タップで解除（サブを隠す）
+                setNailOpen(false);
+            } else {
+                // これから開く → エステ/スカルプ側の選択見た目を解除＆セクションも閉じる
+                document.querySelectorAll('.menu-sections button').forEach(btn => {
+                    const oc = btn.getAttribute('onclick') || '';
+                    if (oc === "showMenu('male')" || oc === "showMenu('whitening')") {
+                        btn.classList.remove('active');
+                    }
+                });
+                ['male', 'whitening'].forEach(id => clearMenuSection(id));
+
+                // ネイルのサブを開く
+                setNailOpen(true);
+                // 見える位置へ
+                sub.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        function clearMenuSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (!section) return;
+
+            // セクションを非表示
+            section.classList.remove('active');
+
+            // 内部のボタン選択を解除
+            section.querySelectorAll('button.active').forEach(b => b.classList.remove('active'));
+
+            // メニュー＆オプションの文言・金額のリセット（他カテゴリーを消す目的）
+            selectedSymptom = '';
+            irradiationsCount = '';
+            menuPrice = 0;
+            optionsPrice = 0;
+            totalAmount = 0;
+
+            updateDisplayInfo();
+        }
+
+        function setNailOpen(open) {
+            const sub = document.getElementById('nailSubButtons');
+            const parent = document.getElementById('nailParentBtn');
+            if (!sub || !parent) return;
+
+            sub.style.display = open ? 'grid' : 'none';
+            parent.classList.toggle('active', open);
+
+            if (!open) {
+                // ネイル子ボタン（ハンド/フット/オフのみ）のactiveも解除
+                sub.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+
+                // ネイル系セクション（female/futto/ohunomi）を閉じて内部選択解除
+                ['female', 'futto', 'ohunomi'].forEach(id => clearMenuSection(id));
+
+                // 表示・金額リセット
+                document.getElementById('treatment-text').innerHTML = '';
+                selectedSymptom = '';
+                irradiationsCount = '';
+                menuPrice = 0;
+                optionsPrice = 0;
+                totalAmount = 0;
+                updateDisplayInfo();
+            }
+        }
+
+        function clearMenuSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (!section) return;
+            section.classList.remove('active');
+            section.querySelectorAll('button.active').forEach(b => b.classList.remove('active'));
         }
 
         // ページが読み込まれたときに前回の入力内容を復元
@@ -1371,38 +1492,61 @@
         }
 
         function showMenu(menu) {
-            // すべてのメニューボタンの選択状態をリセット
+            const isNailChild = (menu === 'female' || menu === 'futto' || menu === 'ohunomi');
+            const isOtherTop = (menu === 'male' || menu === 'whitening');
+
+            // 上部（含むネイル子ボタン）を一旦リセット
             document.querySelectorAll('.menu-sections button').forEach(button => {
                 button.classList.remove('active');
             });
 
-            // 選択されたメニューセクションを表示
+            // すべてのセクションを閉じて内部選択解除
             document.querySelectorAll('.menu-section').forEach(section => {
                 section.classList.remove('active');
                 section.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
             });
 
-            // 対応するメニューボタンを選択状態にする
-            document.querySelectorAll('.menu-sections button').forEach(button => {
-                if (button.getAttribute('onclick') === `showMenu('${menu}')`) {
-                    button.classList.add('active');
-                }
-            });
+            // 「エステ/スカルプ」を選んだらネイルは閉じる＆ネイル子active解除
+            if (isOtherTop) {
+                setNailOpen(false);
+            }
 
-            // 選択されたメニューセクションを表示
-            document.getElementById(menu).classList.add('active');
+            // 「ネイル（子）」ならネイルを開く＆親ボタンと対象子ボタンをactive
+            if (isNailChild) {
+                setNailOpen(true);
 
-            // `treatment-text` の内容をリセット
+                const parentBtn = document.getElementById('nailParentBtn');
+                if (parentBtn) parentBtn.classList.add('active');
+
+                // ←ここがポイント：タップしたネイル子ボタンをactiveに
+                const childBtn = document.querySelector(
+                    `#nailSubButtons button[onclick="showMenu('${menu}')"]`
+                );
+                if (childBtn) childBtn.classList.add('active');
+            }
+
+            // 「ネイル子」以外（＝上部の単体ボタン）は自分自身をactiveに
+            if (!isNailChild) {
+                document.querySelectorAll('.menu-sections button').forEach(button => {
+                    const oc = button.getAttribute('onclick') || '';
+                    if (oc === `showMenu('${menu}')`) {
+                        button.classList.add('active');
+                    }
+                });
+            }
+
+            // 対応するセクションを開く
+            const target = document.getElementById(menu);
+            if (target) target.classList.add('active');
+
+            // 説明や金額類は都度リセット
             document.getElementById("treatment-text").innerHTML = "";
+            selectedSymptom = '';
+            irradiationsCount = '';
+            menuPrice = 0;
+            optionsPrice = 0;
+            totalAmount = 0;
 
-            // メニューとオプションをリセット
-            selectedSymptom = '';      // メニューのリセット
-            irradiationsCount = '';    // オプションのリセット
-            menuPrice = 0;             // メニューの価格リセット
-            optionsPrice = 0;          // オプションの価格リセット
-            totalAmount = 0;           // 合計金額リセット
-
-            // 表示を更新
             updateDisplayInfo();
         }
 
@@ -1431,66 +1575,66 @@
             updateDisplayInfo();
         }
 
-function submitForm() {
-  const formData = {
-    name: document.getElementById('name').value.trim(),
-    phone: document.getElementById('phone').value.trim(),
-    selectedSymptom: (selectedSymptom && selectedSymptom.length > 0) ? selectedSymptom : null,
-    irradiationsCount: irradiationsCount, // 数値/文字列いずれも想定
-    dates: [
-      document.getElementById('date1').value,
-      document.getElementById('date2').value
-    ],
-    message: document.getElementById('message').value.trim()
-  };
+        function submitForm() {
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                selectedSymptom: (selectedSymptom && selectedSymptom.length > 0) ? selectedSymptom : null,
+                irradiationsCount: irradiationsCount, // 数値/文字列いずれも想定
+                dates: [
+                    document.getElementById('date1').value,
+                    document.getElementById('date2').value
+                ],
+                message: document.getElementById('message').value.trim()
+            };
 
-  // 必須チェック
-  if (!formData.name) { alert('お名前を入力してください。'); return; }
-  if (!formData.phone) { alert('電話番号を入力してください。'); return; }
-  if (!formData.selectedSymptom) { alert('メニューを選択してください。'); return; }
-  if (!formData.dates[0]) { alert('第1希望日を選択してください。'); return; }
+            // 必須チェック
+            if (!formData.name) { alert('お名前を入力してください。'); return; }
+            if (!formData.phone) { alert('電話番号を入力してください。'); return; }
+            if (!formData.selectedSymptom) { alert('メニューを選択してください。'); return; }
+            if (!formData.dates[0]) { alert('第1希望日を選択してください。'); return; }
 
-  // 送信用テキストを組み立て（空ならセクションごと省略）
-  const joinSymptom = Array.isArray(formData.selectedSymptom)
-    ? formData.selectedSymptom.join('、')
-    : formData.selectedSymptom;
+            // 送信用テキストを組み立て（空ならセクションごと省略）
+            const joinSymptom = Array.isArray(formData.selectedSymptom)
+                ? formData.selectedSymptom.join('、')
+                : formData.selectedSymptom;
 
-  let text = `【予約フォーム】\n\n` +
-             `〈お名前〉\n・${formData.name}\n\n` +
-             `〈電話番号〉\n・${formData.phone}\n\n` +
-             `〈メニュー〉\n・${joinSymptom}\n`;
+            let text = `【予約フォーム】\n\n` +
+                `〈お名前〉\n・${formData.name}\n\n` +
+                `〈電話番号〉\n・${formData.phone}\n\n` +
+                `〈メニュー〉\n・${joinSymptom}\n`;
 
-  // オプション（数値なら >0、文字列なら空白以外がある時だけ）
-  const hasIrradiations =
-    (typeof formData.irradiationsCount === 'number')
-      ? formData.irradiationsCount > 0
-      : (formData.irradiationsCount && String(formData.irradiationsCount).trim() !== '');
+            // オプション（数値なら >0、文字列なら空白以外がある時だけ）
+            const hasIrradiations =
+                (typeof formData.irradiationsCount === 'number')
+                    ? formData.irradiationsCount > 0
+                    : (formData.irradiationsCount && String(formData.irradiationsCount).trim() !== '');
 
-  if (hasIrradiations) {
-    text += `\n〈オプション〉\n・${formData.irradiationsCount}\n`;
-  }
+            if (hasIrradiations) {
+                text += `\n〈オプション〉\n・${formData.irradiationsCount}\n`;
+            }
 
-  // 第一希望日は必須
-  text += `\n〈第一希望日〉\n${formatDate(formData.dates[0])}\n`;
+            // 第一希望日は必須
+            text += `\n〈第一希望日〉\n${formatDate(formData.dates[0])}\n`;
 
-  // 第二希望日（任意）
-  if (formData.dates[1]) {
-    text += `\n〈第二希望日〉\n${formatDate(formData.dates[1])}\n`;
-  }
+            // 第二希望日（任意）
+            if (formData.dates[1]) {
+                text += `\n〈第二希望日〉\n${formatDate(formData.dates[1])}\n`;
+            }
 
-  // メッセージ（任意）
-  if (formData.message) {
-    text += `\n〈メッセージ〉\n・${formData.message}`;
-  }
+            // メッセージ（任意）
+            if (formData.message) {
+                text += `\n〈メッセージ〉\n・${formData.message}`;
+            }
 
-  // 送信
-  liff.sendMessages([{ type: 'text', text }]).then(() => {
-    alert('スタッフが日時確認次第、ご連絡差し上げます。');
-    liff.closeWindow();
-  }).catch((err) => {
-    console.error('メッセージの送信に失敗しました', err);
-  });
-}
+            // 送信
+            liff.sendMessages([{ type: 'text', text }]).then(() => {
+                alert('スタッフが日時確認次第、ご連絡差し上げます。');
+                liff.closeWindow();
+            }).catch((err) => {
+                console.error('メッセージの送信に失敗しました', err);
+            });
+        }
 
         function formatDate(datetime) {
             /* 日時文字列が空の場合は空文字を返す */
