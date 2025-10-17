@@ -937,21 +937,6 @@
         <div class="label" id="course">メニューカテゴリーを<span class="required">必須</span><br>お選びください</div>
         <div class="menu-sections">
             <button type="button" onclick="showMenu('male')">POLAエステ</button>
-            <div class="menu-divider"></div>
-            <!-- ▼ 追加：ネイル親ボタン＋サブメニュー（最初は非表示） -->
-            <button type="button" id="nailParentBtn" onclick="toggleNail()">ネイル</button>
-            <div id="nailSubButtons" class="nail-submenu" style="display:none;">
-                <button type="button" onclick="showMenu('female')">ハンドメニュー</button>
-                <button type="button" onclick="showMenu('futto')">フットメニュー</button>
-                <button type="button" onclick="showMenu('ohunomi')">オフのみ</button>
-            </div>
-            <!-- ▲ ここまで -->
-            <div class="menu-divider"></div>
-            <button type="button" onclick="showMenu('whitening')">スカルプインク</button>
-        </div>
-
-        <div id="treatment-text" style="display: none; margin-bottom: 10px;"></div>
-
         <div id="male" class="menu-section">
             <div class="label">
                 <span class="highlight-text">◆POLAエステ◆<span class="required">必須</span></span>
@@ -969,6 +954,12 @@
                 <button type="button" id="thirdirradiations" onclick="selectirradiations(this)" data-price="15000">コアビューティー</button>
             </div>
         </div>
+        
+            <div class="menu-divider"></div>
+            <!-- ▼ 追加：ネイル親ボタン＋サブメニュー（最初は非表示） -->
+            <button type="button" id="nailParentBtn" onclick="toggleNail()">ネイル</button>
+            <div id="nailSubButtons" class="nail-submenu" style="display:none;">
+                <button type="button" onclick="showMenu('female')">ハンドメニュー</button>
 
         <div id="female" class="menu-section">
             <div class="labelContent">
@@ -994,6 +985,9 @@
             </div>
         </div>
 
+                  <div class="menu-divider"></div>
+
+                <button type="button" onclick="showMenu('futto')">フットメニュー</button>
         <div id="futto" class="menu-section">
             <div class="labelContent">
                 <span class="highlight-text">　　【ネイル】<span class="required">必須</span><br>◆フットメニュー◆</span>
@@ -1017,6 +1011,9 @@
             </div>
         </div>
 
+                  <div class="menu-divider"></div>
+
+                <button type="button" onclick="showMenu('ohunomi')">オフのみ</button>
         <div id="ohunomi" class="menu-section">
             <div class="labelContent">
                 <span class="highlight-text">　　【ネイル】<span class="required">必須</span><br>◆オフのみ◆</span>
@@ -1026,6 +1023,13 @@
                 <button type="button" onclick="selectSymptom(this, 'treatment6')" data-price="15000">他店オフ</button>
             </div>
         </div>
+            </div>
+            <!-- ▲ ここまで -->
+            <div class="menu-divider"></div>
+            <button type="button" onclick="showMenu('whitening')">スカルプインク</button>
+        </div>
+
+        <div id="treatment-text" style="display: none; margin-bottom: 10px;"></div>
 
         <div id="whitening" class="menu-section">
             <div class="labelContent">
@@ -1496,8 +1500,58 @@ function setNailOpen(open) {
 
 function showMenu(menu) {
   const isNailChild = (menu === 'female' || menu === 'futto' || menu === 'ohunomi');
-  const isOtherTop = (menu === 'male' || menu === 'whitening');
+  const isOtherTop  = (menu === 'male' || menu === 'whitening');
 
+  const target = document.getElementById(menu);
+  const isAlreadyActive = target && target.classList.contains('active');
+
+  // === すでにアクティブ → 解除動作（トグル） ===
+  if (isAlreadyActive) {
+    if (isNailChild) {
+      // 子メニューのみ解除。親ネイルは維持＆サブメニューも開いたまま
+      target.classList.remove('active');
+
+      const childBtn = document.querySelector(
+        `#nailSubButtons button[onclick="showMenu('${menu}')"]`
+      );
+      if (childBtn) childBtn.classList.remove('active');
+
+      // 子メニュー内の選択をリセット
+      target.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+
+      // 親ネイルを維持
+      setNailOpen(true);
+      const parentBtn = document.getElementById('nailParentBtn');
+      if (parentBtn) parentBtn.classList.add('active');
+
+      // 価格系などの状態をクリア（必要ならそのまま）
+      document.getElementById("treatment-text").innerHTML = "";
+      selectedSymptom = '';
+      irradiationsCount = '';
+      menuPrice = 0;
+      optionsPrice = 0;
+      totalAmount = 0;
+      selectedCategoryText = '';
+      updateDisplayInfo();
+    } else {
+      // トップメニュー（POLA/スカルプインク）の解除時は全体リセット＆ネイルは閉じる
+      document.querySelectorAll('.menu-sections button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.menu-section').forEach(s => s.classList.remove('active'));
+      setNailOpen(false);
+
+      document.getElementById("treatment-text").innerHTML = "";
+      selectedSymptom = '';
+      irradiationsCount = '';
+      menuPrice = 0;
+      optionsPrice = 0;
+      totalAmount = 0;
+      selectedCategoryText = '';
+      updateDisplayInfo();
+    }
+    return;
+  }
+
+  // === 通常の選択処理 ===
   document.querySelectorAll('.menu-sections button').forEach(button => {
     button.classList.remove('active');
   });
@@ -1519,20 +1573,15 @@ function showMenu(menu) {
       `#nailSubButtons button[onclick="showMenu('${menu}')"]`
     );
     if (childBtn) childBtn.classList.add('active');
+  } else {
+    const topBtn = Array.from(document.querySelectorAll('.menu-sections button'))
+      .find(btn => (btn.getAttribute('onclick') || '') === `showMenu('${menu}')`);
+    if (topBtn) topBtn.classList.add('active');
   }
 
-  if (!isNailChild) {
-    document.querySelectorAll('.menu-sections button').forEach(button => {
-      const oc = button.getAttribute('onclick') || '';
-      if (oc === `showMenu('${menu}')`) {
-        button.classList.add('active');
-      }
-    });
-  }
-
-  const target = document.getElementById(menu);
   if (target) target.classList.add('active');
 
+  // 状態リセット
   document.getElementById("treatment-text").innerHTML = "";
   selectedSymptom = '';
   irradiationsCount = '';
@@ -1540,15 +1589,13 @@ function showMenu(menu) {
   optionsPrice = 0;
   totalAmount = 0;
 
-  // ★追加：ここでカテゴリー名を確定
-  // 1) ネイル子メニュー：子ボタンのテキスト
+  // カテゴリ名の表示用
   if (isNailChild) {
     const childBtn = document.querySelector(
       `#nailSubButtons button[onclick="showMenu('${menu}')"]`
     );
     selectedCategoryText = childBtn ? childBtn.innerText.trim() : '';
   } else {
-    // 2) それ以外（POLAエステ／スカルプインク）：該当トップボタンのテキスト
     const topBtn = Array.from(document.querySelectorAll('.menu-sections button'))
       .find(btn => (btn.getAttribute('onclick') || '') === `showMenu('${menu}')`);
     selectedCategoryText = topBtn ? topBtn.innerText.trim() : '';
